@@ -1,0 +1,99 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,
+		  minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<title>机台操作-EasyReport-V2.0</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand" />
+
+	<link rel="stylesheet" href="~/static/css/font.css" />
+	<link rel="stylesheet" href="~/static/css/weadmin.css" />
+
+	<script type="text/javascript" src="~/layui/layui.js"></script>
+	@*顶部工具栏*@
+	<script id="toolInTop" type="text/html">
+		<div class="layui-btn-container">
+			<button class="layui-btn-tool layui-btn-sm" lay-event="DelAll">
+				验证全选|预留全删
+			</button>
+		</div>
+	</script>
+
+	@*表内编辑栏*@
+	<script id="toolInLine" type="text/html">
+		<a class="layui-btn-tool layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn-tool layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+
+	<script type="text/javascript">
+		layui.extend({
+			admin:'{/}../../static/js/admin'
+		})
+
+		layui.use('table', function () {
+			var table = layui.table
+
+			layer.load(3);
+			setTimeout(function () {
+				layer.closeAll('loading');
+			}, 2000);
+
+			table.render({
+				elem: "#CusromerInfo",
+				url: '/Customer/GetCustomerInfo',
+				title: '机台信息表',
+				toolbar: '#toolInTop',
+				cols: [[
+					{ type: 'numbers', fixed: 'left' },
+					{ type: 'checkbox' },
+					{ field: 'CustomerId', title: '机台标识', sort: true, align: 'center' },
+					{ field: 'ProjectId', title: '项目标识', align: 'center' },
+					{ field: 'CustomerCode', title: '机台编码', edit: 'text', sort: true, algin: 'center' },
+					{ field: 'CustomerName', title: '机台名称', edit: 'text', sort: true, align: 'center' },
+					{ field: 'right', title: '操作', toolbar: '#toolInLine', align: 'center' }
+				]],
+				page: true,
+				request: {
+					pageName: 'page',
+					limitName: 'limit'
+				},
+				response: {
+					statusName: 'code',
+					statusCode: 0,
+					msgName: 'msg',
+					countName: 'count',
+					dataNAme: 'data',
+				}
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<!--静态站点地图-->
+	<div class="weadmin-nav">
+		<span class="layui-breadcrumb">
+			<a href="javascript:;">首页</a>
+			<span lay-separator="">/</span>
+			<a href="javascript:;"> <cite>机台基础数据</cite></a>
+		</span>
+		<a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right"
+		   href="javascript:;location.replace(location.href);" title="刷新">
+			<i class="layui-icon layui-icon-refresh"></i>
+		</a>
+	</div>
+
+	<!--承载Json数据的表格-->
+	<table class="layui-hide" id="CusromerInfo" lay-filter="CusromerInfo"></table>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+﻿.inpresize{
+    width:25%;
+}
+
+.btnresize{
+    width:8%;
+}
+
+.btngroup{
+    text-align:right;
+}
+
+.rtitle{
+    text-align:center;
+    font-size:18px;
+    font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial, sans-serif;
+    padding:8px 0 0 0;
+    width:100%;
+}
+
+table {
+    border: 1px solid #e3e6e8;
+    border-collapse: collapse;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #e3e6e8;
+    height: 38px;
+    line-height: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+th {
+    background-color: #189AD6;
+    color: #fff;
+    text-align:center
+}
+
+.layui-layer {
+    word-break: keep-all;
+    word-wrap: break-word;
+}

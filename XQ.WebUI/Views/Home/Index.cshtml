@@ -1,0 +1,234 @@
+﻿@model XQ.WebUI.Models.MenuModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>周报总结-Easy Report V2.0</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/static/css/font.css"/>
+    <link rel="stylesheet" href="~/static/css/weadmin.css"/>
+
+    <script type="text/javascript" src="~/layui/layui.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/static/js/index.js"></script>
+</head>
+<body>
+    <!--顶部菜单：系统标识、菜单栏入口、新增快捷键、当前时间、用户信息、退出系统-->
+    <div class="container">
+        <div class="logo">
+            <a href="/Home/Index">EasyReport V2.0</a>
+        </div>
+
+        <div class="left_open">
+            <i title="展开左侧栏" class="layui-icon layui-icon-spread-left"></i>
+        </div>
+
+        <ul class="layui-nav left fast-add" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;">+ 新增</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a onclick="WeAdminShow('客户', '/Customer/AddCustomer')"><i class="layui-icon layui-icon-friends"></i>客户</a>
+                    </dd>
+                    <dd>
+                        <a onclick="WeAdminShow('资源', '/Staff/AddStaff')"><i class="layui-icon layui-icon-user"></i>资源</a>
+                    </dd>
+                    <dd>
+                        <a onclick="WeAdminShow('部门', '/Work/AddDepartment')"><i class="layui-icon layui-icon-tabs"></i>部门</a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <strong id="times">@Model.LoginTime</strong>
+            </li>
+            <li class="layui-nav-item">
+                <strong> &nbsp;&nbsp;&nbsp;&nbsp;欢迎你：@Model.LoginName  @Model.LoginRole </strong>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">Admin</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a onclick="WeAdminShow('个人信息','/Staff/StaffInfo')">个人信息</a>
+                    </dd>
+                    <dd>
+                        <a onclick="WeAdminShow('切换账号', '/Account/Login')">切换账号</a>
+                    </dd>
+                    <dd>
+                        <a class="loginout" href="/Account/Login">退出系统</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item to-index">
+                <a href="/Home/Index">前台首页</a>
+            </li>
+        </ul>
+    </div>
+
+    <!--左侧菜单：系统全部功能菜单栏-->
+    <div class="left-nav">
+        <div id="side-nav">
+			<ul id="nav">
+				<li>
+					<a href="javascript:;">
+						<i class="layui-icon layui-icon-home"></i>
+						<cite>基本汇报数据</cite>
+						<i class="iconfont nav_right">&#xe697;</i>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a _href="/Home/ReportInfo">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>汇报数据整合</cite>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;">
+								<i class="layui-icon layui-icon-upload"></i>
+								<cite>汇报数据导出</cite>
+								<i class="iconfont nav_right">&#xe697;</i>
+							</a>
+							<ul class="sub-menu">
+								<li>
+									<a _href="/Home/ReportInfo">
+										<i class="iconfont">&#xe6a7;</i>
+										<cite>导出到Excel</cite>
+									</a>
+								</li>
+								<li>
+									<a _href="/Home/ReportInfo">
+										<i class="iconfont">&#xe6a7;</i>
+										<cite>导出到Project</cite>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<!--我们设置了哪些部门,拥有多少资源-->
+				<li>
+					<a href="javascript:;">
+						<i class="layui-icon layui-icon-user"></i>
+						<cite>部门资源管理</cite>
+						<i class="iconfont nav_right">&#xe697;</i>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a _href="/Staffs/StaffIndex">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>人员基础数据</cite>
+							</a>
+						</li>
+						<li>
+							<a _href="/Department/Department">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>部门基础数据</cite>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<!--针对哪些客户|机台或者机型或自主研发-->
+				<li>
+					<a _href="/Customer/CustomerIndex">
+						<i class="layui-icon layui-icon-cellphone"></i>
+						<cite>客户|机台数据</cite>
+						<i class="iconfont nav_right">&#xe697;</i>
+					</a>
+				</li>
+				<!--自己创建和被动承担了哪些项目-->
+				<li>
+					<a href="javascript:;">
+						<i class="layui-icon layui-icon-templeate-1"></i>
+						<cite>项目任务管理</cite>
+						<i class="iconfont nav_right">&#xe697;</i>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a _href="/Project/ProjectIndex">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>项目基础数据</cite>
+							</a>
+						</li>
+
+						<li>
+							<a _href="/Work/WorkReportIndex">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>任务汇报数据</cite>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<!--每天每个员工花费的工时如何-->
+				<li>
+					<a href="javascript:;">
+						<i class="layui-icon layui-icon-chart-screen"></i>
+						<cite>工时趋势走向</cite>
+						<i class="iconfont nav_right">&#xe697;</i>
+					</a>
+					<ul class="sub-menu">
+						<li>
+							<a _href="/SingleTrend/SingleTrendIndex">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>单趋势工时图</cite>
+							</a>
+						</li>
+						<li>
+							<a _href="/MultipleTrends /MultipleTrendsIndex">
+								<i class="iconfont">&#xe6a7;</i>
+								<cite>多趋势工时图</cite>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+        </div>
+    </div>
+
+    <!--中部面板：iframe + layui框架-->
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="wenav_tab" id="WeTabTip" lay-allowclose="true">
+            <ul class="layui-tab-title" id="tabName">
+                <li>汇报数据整合</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <iframe src='/Home/ReportInfo' frameborder="0" scrolling="yes" class="weIframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--中部背景：为面板添加背景-->
+    <div class="page-content-bg"></div>
+
+    <!--底部状态栏：目前是版本信息，后期改为软件 V1.0 人员分类-->
+	<div class="footer">
+		<div class="staffGroup">
+			@foreach (var p in Model.Name)
+			{
+			<a>@p &nbsp;&nbsp;</a>
+			}
+		</div>
+		<div class="copyright">Copyright &copy; 2019 EasyReport v2.0 All Rights Reserved</div>
+	</div>
+
+</body>
+    <!--iframe操作栏：正对多个标签一次性删除-->
+    <ul class="rightMenu" id="rightMenu">
+        <li data-type="fresh">刷新</li>
+        <li data-type="current">关闭当前</li>
+        <li data-type="other">关闭其它</li>
+        <li data-type="all">关闭所有</li>
+    </ul>
+</html>

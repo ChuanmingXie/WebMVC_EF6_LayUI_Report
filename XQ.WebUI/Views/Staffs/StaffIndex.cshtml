@@ -1,0 +1,114 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,
+		  minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<title>员工操作-EasyReport-V2.0</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand" />
+
+	<link rel="stylesheet" href="~/static/css/font.css" />
+	<link rel="stylesheet" href="~/static/css/weadmin.css" />
+
+	<script type="text/javascript" src="~/layui/layui.js"></script>
+	@*顶部工具栏*@
+	<script id="toolInTop" type="text/html">
+		<div class="layui-btn-container">
+			<button class="layui-btn-tool layui-btn-sm" lay-event="DelAll">
+				验证全选|预留全删
+			</button>
+		</div>
+	</script>
+
+	@*表内编辑栏*@
+	<script id="toolInLine" type="text/html">
+		<a class="layui-btn-tool layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn-tool layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+
+	@*表内经理标志*@
+	<script id="switchManger" type="text/html">
+		<input type="checkbox" name="sex" value="{{d.IsManager}}" lay-skin="switch"
+			   lay-text="是|否" lay-filter="sexDemo" {{ d.IsManager ==1 ? 'checked' : '' }}>
+	</script>
+
+	@*表内在职标志*@
+	<script id="switchActive" type="text/html">
+		<input type="checkbox" name="sex" value="{{d.ActiveFlag}}" lay-skin="switch"
+			   lay-text="是|否" lay-filter="sexDemo" {{ d.ActiveFlag == 1 ? 'checked' : '' }}>
+	</script>
+	<script type="text/javascript">
+
+		layui.extend({
+			admin: '{/}../../static/js/admin'
+		})
+
+		layui.use('table', function () {
+			var table = layui.table,
+				form = layui.form
+
+			layer.load(3);
+			setTimeout(function () {
+				layer.closeAll('loading');
+			}, 2000);
+
+			table.render({
+				elem: "#staffsInfo",
+				url: '/Staffs/GetStaffInfo',
+				title: '员工信息表',
+				toolbar: '#toolInTop',
+				cols: [[
+					{ type: 'numbers', fixed: 'left' },
+					{ type: 'checkbox'},
+					{ field: 'StaffId', title: '员工标识', align: 'center' },
+					{ field: 'DepartmentId', title: '部门编号', sort: true, align: 'center'},
+					{ field: 'StaffName', title: '姓名', align: 'center' },
+					{ field: 'StaffPwd', title: '密码', algin: 'center' },
+					{ field: 'IsManager', title: '主管设置', templet: '#switchManger', sort: true, algin: 'center'},
+					{ field: 'ActiveFlag', title: '在职情况', templet: '#switchActive', align: 'center' },
+					{ fixed: 'right',title:'操作', toolbar: '#toolInLine', align: 'center'}
+
+				]],
+				page: true,
+				request: {
+					pageName: 'page',
+					limitName: 'limit'
+				},
+				response: {
+					statusName: 'code',
+					statusCode: 0,
+					msgName: 'msg',
+					countName: 'count',
+					dataName: 'data'
+				}
+			});
+		})
+
+	</script>
+</head>
+<body>
+	<!--静态站点地图-->
+    <div class="weadmin-nav">
+		<span class="layui-breadcrumb">
+			<a href="javascript:;">首页</a>
+			<span lay-separator="">/</span>
+			<a href="javascript:;"> <cite>员工基础数据</cite></a>
+		</span>
+		<a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right"
+		   href="javascript:;location.replace(location.href);" title="刷新">
+		<i class="layui-icon layui-icon-refresh"></i>
+		</a>
+    </div>
+
+	<!--承载Json数据的表格-->
+	<table class="layui-hide" id="staffsInfo" lay-filter="staffsInfo"></table>
+</body>
+</html>

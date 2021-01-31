@@ -1,0 +1,202 @@
+﻿@model  XQ.WebUI.Models.ReportModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>汇报进度-Easy Report V2.0</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+    <link rel="stylesheet" href="~/static/css/font.css" />
+    <link rel="stylesheet" href="~/static/css/weadmin.css" />
+    <link rel="stylesheet" href="~/static/css/reportInfo.css" />
+
+    <script type="text/javascript" src="~/layui/layui.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/static/js/reportInfo.js"></script>
+
+	<!--初始化函数-->
+    <script type="text/javascript">
+    layui.use('form', function () {
+        var form = layui.form;
+        form.val('ReportFilter', {
+            "selectTime": "@Html.FormatValue(DateTime.Now,"{0:yyyy-MM-dd}")"
+        });
+    })
+    </script>
+
+</head>
+<body>
+    <!--iframe页面头部:用以链接的静态站点地图-->
+    <div class="weadmin-nav">
+        <span class="layui-breadcrumb">
+            <a href="javascript:;">首页</a><span lay-separator="">/</span>
+            <a href="javascript:;"> <cite>汇报数据整合</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right"
+           href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh"></i>
+        </a>
+    </div>
+
+    <!--iframe页面主题:用以显示汇报数据-->
+    <div class="weadmin-body">
+        <!--数据工具栏:时间选择、内容选择、主标题、按周选择-->
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 we-search" lay-filter="ReportFilter">
+                <div class="layui-col-md4">
+                    <button class="layui-btn" lay-submit="" lay-filter="filter">
+                        <i class="layui-icon layui-icon-set"></i>
+                    </button>
+                    <div class="layui-inline inpresize">
+                        <input class="layui-input" name="selectTime" id="selectTime" />
+                    </div>
+                    <div class="layui-input-inline inpresize">
+                        <select name="selectContent">
+                            <option>有工作内容的项目</option>
+                            <option>全部项目</option>
+                        </select>
+                    </div>
+                    <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                        <i class="layui-icon layui-icon-search"></i>
+                    </button>
+                </div>
+                <div class="layui-col-md4">
+                    <div class="rtitle">
+                        软件电控部 @DateTime.Now.Month 月第 1 周重点工作
+                    </div>
+                </div>
+                <div class="layui-col-md4 btngroup">
+                    <button id="onemonth" class="layui-btn layui-btn-radius btnresize">
+                        <i style="font-size:x-large" class="layui-icon layui-icon-date"></i>
+                    </button>
+                    <button id="weekone" class="layui-btn layui-btn-radius btnresize">1</button>
+                    <button id="weekteo" class="layui-btn layui-btn-radius btnresize">2</button>
+                    <button id="weekthr" class="layui-btn layui-btn-radius btnresize">3</button>
+                    <button id="weekthu" class="layui-btn layui-btn-radius btnresize">4</button>
+                    <button id="weekfir" class="layui-btn layui-btn-radius btnresize">5</button>
+                </div>
+            </form>
+        </div>
+
+        <!--数据表批量操作-->
+        <div class="weadmin-block">
+            <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                <i class="layui-icon layui-icon-delete"></i>批量删除
+            </button>
+            <button class="layui-btn" onclick="WeAdminShow('添加用户','./add.html',600,400)">
+                <i class="layui-icon layui-icon-add-circle-fine"></i>添加
+            </button>
+            <span class="tool-right" style="line-height:40px">共有数据：@Model.ReportIndex.Count() &nbsp;条</span>
+        </div>
+
+        <!--操作完成的数据显示表-->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:2%">
+                        <div class="layui-unselect header layui-form-checkbox" lay-skin="primary">
+                            <i class="layui-icon">&#xe605;</i>
+                        </div>
+                    </th>
+                    <th style="width:7%">项目名称</th>
+                    <th>客户/机台</th>
+                    <th style="width:10%">工作内容</th>
+                    <th>责任人</th>
+                    <th style="width:8%">工时</th>
+                    <th>开工时间</th>
+                    <th>完成时间</th>
+                    <th style="width:25%">完成情况</th>
+                    <th style="width:8%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.ReportIndex)
+                {
+                    string[] StaffsGrouptemp;
+                    string StaffsGroup = "";
+                    string ReportGroup = "";
+                    foreach (var m in Model.ReportDetails)
+                    {
+                        if (p.WorkId == m.WorkId)
+                        {
+                            StaffsGroup += " " + m.StaffName;
+                            ReportGroup += '[' + @Html.FormatValue(m.ReportTime, "{0:MM-dd}") + " " + m.StaffName + ']' + m.ReportText + "<br/>";
+                        }
+                    }
+                    StaffsGrouptemp = StaffsGroup.Split(' ').Distinct().ToArray();
+                    var str = "";
+                    for (int x = 0; x < StaffsGrouptemp.Length; x++)
+                    {
+                        str += " " + StaffsGrouptemp[x];
+                    };
+                    <tr data-id="1">
+                        <td style="width:2%;text-align:center">
+                            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id="1">
+                                <i class="layui-icon">&#xe605;</i>
+                            </div>
+                        </td>
+                        @*<td style="width: 7%">@Html.ActionLink(p.ProjectCode, "ProjectEdit", new { p.ProjectId })</td>*@
+                        <td style="width: 7%">
+                            <a title="操作项目" onclick="WeAdminEdit('操作项目', '/Project/ProjectView',@p.ProjectId, 750, 550);" href="javascript:;">@p.ProjectCode</a>
+                        </td>
+                        <td>
+                            @if (p.CustomerName != "")
+                            {
+                                @*@Html.ActionLink(p.CustomerName, "CustomerEdit", new { p.CustomerId })*@
+                                <a title="操作机台" onclick="WeAdminEdit('操作机台', '/Customer/CustomerEdit',@p.CustomerId, 750, 550);"href="javascript:;">@p.CustomerName</a>
+                            }
+                        </td>
+                        @*<td style="width: 10%">@Html.ActionLink(p.WorkSummary, "WorkEdit", new { p.WorkId })</td>*@
+                        <td style="width: 10%">
+                            <a title="操作任务" onclick="WeAdminEdit('操作任务', '/Work/WorkEdit',@p.WorkId, 750, 550);"href="javascript:;">@p.WorkSummary</a>
+                        </td>
+                        
+                        <td>@str</td>
+                        <td style="width:8%;text-align:center">@p.EstimateHours&#9889;@p.ActualHours</td>
+                        <td style="text-align:center">@Html.FormatValue(p.ScheduleStart, "{0:MM月dd日}")/@(p.ActualStart.Equals(null) == true ? "未开始" : Html.FormatValue(p.ActualStart, "{0:MM月dd日}"))</td>
+                        <td style="text-align:center">@Html.FormatValue(p.ScheduleEnd, "{0:MM月dd日}")/@(p.ActualEnd.Equals(null) == true ? "未完成" : Html.FormatValue(p.ActualEnd, "{0:MM月dd日}"))</td>
+                        <td style="width: 25%">@ReportGroup</td>
+                        <!--将原版软件中放在客户机的开始和汇报状态放在此处-->
+                        <td style="width: 8%;text-align:center">
+                            <a onclick="member_stop(this,'10001')" href="javascript:;" title="任务开始">
+                                <i class="layui-icon layui-icon-download-circle"></i>
+                            </a>
+                            <a title="编辑" onclick="WeAdminShow('汇报状态','Report/AddReport',600, 400)" href="javascript:;">
+                                <i class="layui-icon layui-icon-edit"></i>
+                            </a>
+                            <a onclick="WeAdminEdit('编辑最近', 'Report/ReportEdit', 750, 550)" title="修改密码" href="javascript:;">
+                                <i class="layui-icon layui-icon-util"></i>
+                            </a>
+                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                <i class="layui-icon layui-icon-delete"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!--分页功能区域-->
+        <div class="page">
+            <div>
+                <a class="prev" href="">&lt;&lt;</a> <a class="num" href="">1</a>
+                <span class="current">2</span> <a class="num" href="">3</a>
+                <a class="num" href="">489</a> <a class="next" href="">&gt;&gt;</a>
+            </div>
+        </div>
+
+		<!--当选择其他方式的展示：人名分类展示、按周分类展示时
+			目前考录用异步传输的方式回调数据，
+			动态隐掉原先view传过来的数据表格
+			从新使用layui异步获取的方式传值画出新的table
+			-->
+    </div>
+</body>
+</html>

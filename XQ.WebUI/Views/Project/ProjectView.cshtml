@@ -1,0 +1,165 @@
+﻿@*
+@model传递的数据有:StaffName、StaffId、CustomerId、CustomerCode、ProjectId
+大致思路是:点击链接将ProjectId送到后台,返回一个同时具有以上信息的Model
+*@
+
+@model XQ.Domain.Entities.Projects
+
+<link rel="stylesheet" href="~/static/css/font.css" />
+<link rel="stylesheet" href="~/static/css/weadmin.css" />
+
+<script type="text/javascript" src="~/layui/layui.js"></script>
+<script type="text/javascript" src="~/static/js/projectView.js"></script>
+
+<script type="text/javascript">
+    layui.use('form', function () {
+        var form = layui.form;
+        form.val('workintial', {
+            "ProjectCode": "@Model.ProjectCode",
+            "ScheduleStart": "@Html.FormatValue(DateTime.Now,"{0:yyyy-MM-dd}")",
+            "ScheduleEnd": "@Html.FormatValue(DateTime.Now.AddDays(2.0),"{0:yyyy-MM-dd}")",
+            "CustomerId": 0,
+            "StaffName": 4
+        });
+    })
+</script>
+
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">添加项目</li>
+        <li>编辑项目</li>
+        <li>添加任务</li>
+    </ul>
+
+    <div class="layui-tab-content" style="height: 100px;">
+        <!--添加项目选项卡:不需要额外参数-->
+        <div class="layui-tab-item layui-show">
+            <form class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目编号</label>
+                    <div class="layui-input-block">
+                        <input name="ProjectCode" class="layui-input" lay-verify="required" type="text" placeholder="请输入项目编号" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">项目描述</label>
+                    <div class="layui-input-block">
+                        <textarea id="projectDesc" name="ProjectDesc" lay-verify="required" class="layui-textarea" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-filter="addproject" lay-submit="">增加</button>
+                </div>
+            </form>
+        </div>
+
+        <!--编辑项目选项卡:需要参数,显示跳转链接的详细信息-->
+        <div class="layui-tab-item">
+            @*项目编号:input
+            项目描述:textArea
+            保存 取消*@
+            <form class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    @Html.HiddenFor(s => s.ProjectId, new {id="projectId", name = "StaffId" })
+                    <label class="layui-form-label">项目编号</label>
+                    <div class="layui-input-block">
+                        @Html.TextBoxFor(s => s.ProjectCode, new { @class = "layui-input", type = "text", id = "updatecode", placeholder = "请输入项目编号", name = "ProjectCode" })
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">项目描述</label>
+                    <div class="layui-input-block">
+                        @Html.TextAreaFor(s => s.ProjectDesc, new { @class = "layui-textarea", id = "updatedesc", placeholder = "请输入内容", name = "ProjectDesc" })
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-filter="updateproject" lay-submit="">更新</button>                   
+                </div>
+            </form>
+        </div>
+
+        <!--添加任务选项卡:需要参数,ProjectCode、customerName、Staffs、最后添加到Works表-->
+        <div class="layui-tab-item" id="addwork">
+            @*项目名称:input
+            机台编号:combox
+            工作任务:Area
+            计划开工:timeinput
+            计划完工:timeinput
+            计划工时:input
+            人员配置:combox
+            保存 取消*@
+
+            <form class="layui-form layui-form-pane" lay-filter="workintial" action="/Works/AddWork">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目名称</label>
+                    <div class="layui-input-block">
+                        <input name="ProjectCode" class="layui-input" type="text" lay-verify="required"  placeholder="请输入标题" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">机台编号</label>
+                    <div class="layui-input-block">
+                        <select name="CustomerId" lay-filter="aihao">
+                            <option value="0" selected="">请选择机台|客户</option>                           
+                            @foreach(var p in Model.Customers)
+                            {
+                                <option value="@p.CustomerCode">@p.CustomerName</option>                                
+                            }
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">工作任务</label>
+                    <div class="layui-input-block">
+                        <textarea name="WorkSummary" class="layui-textarea" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-line">
+                        <label class="layui-form-label">计划开工</label>
+                        <div class="layui-input-block">
+                            <input name="ScheduleStart" class="layui-input" id="schedulestart" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-line">
+                        <label class="layui-form-label">计划完工</label>
+                        <div class="layui-input-block">
+                            <input name="ScheduleEnd" class="layui-input" id="scheduleend" type="text" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">人员配置</label>
+                    <div class="layui-input-block">
+                        <select name="StaffName" lay-filter="aihao">
+                            <option value="0" selected="">名字1</option>
+                            <option value="1">名字2</option>
+                            <option value="2">名字3</option>
+                            <option value="3">名字4</option>
+                            <option value="4">名字5</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <button id="Save" class="layui-btn" lay-filter="demo2" lay-submit="">保存</button>
+                    <button id="Cancel" class="layui-btn" lay-filter="demo2" lay-submit="">取消</button>                   
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
+

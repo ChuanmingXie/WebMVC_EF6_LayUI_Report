@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>周报软件 Easy Report-V2.0</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon"/>
+	
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css"/>
+	<link rel="stylesheet" href="~/static/css/font.css"/>
+	<link rel="stylesheet" href="~/static/css/weadmin.css"/>
+	
+    <script src="~/layui/layui.js" charset="utf-8"></script>
+</head>
+
+<body class="login-bg">
+    <!--登录界面:表单验证-->
+	<div class="login">
+		<div class="message">周报软件 ER V2.0-系统登录</div>
+		<div id="darkbannerwrap"></div>
+		<form class="layui-form" method="post" action="/Account/Login">
+			<input name="StaffName" placeholder="用户名" type="text" lay-verify="required" class="layui-input" />
+			<hr class="hr15" />
+			<input name="StaffPwd" lay-verify="required" placeholder="密   码" type="password" class="layui-input" />
+			<hr class="hr15">
+			<input class="loginin" value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit" />
+			<hr class="hr20">
+			<div class="text-center">
+				<a href="http://www.cfmee.cn"><img src="~/static/images/logo.png" alt="进入公司主页" /></a>
+			</div>
+		</form>
+	</div>
+
+    <!--系统版本信息-->
+	<div style="text-align:center; margin-top:80px; font-size:14px; font-weight:400;color:#15499a">
+		Copyright &copy; EasyReport v2.0 All Rights Reserved.
+	</div>
+
+    <!--加载layui组件-->
+	<script type="text/javascript">
+		layui.extend({
+			admin: '{/}../../static/js/admin'
+		});
+		layui.use(['form', 'admin'], function () {
+		    var form = layui.form, admin = layui.admin;
+				});
+	</script>
+
+</body>
+
+</html>
