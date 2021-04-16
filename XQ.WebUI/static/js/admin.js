@@ -1,6 +1,6 @@
 /*
- * @Date:   2018-01-01
- * @lastModify 2018-3-27 15:00:35
+ * @Date:   2019-04-01
+ * @Creater xiechuanming
  */
 
 layui.define(['jquery', 'form', 'layer', 'element'], function(exports) {

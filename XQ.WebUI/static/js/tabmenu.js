@@ -1,7 +1,6 @@
 /*
- * @Author: Paco
- * @Date:   2017-01-31
- * @lastModify 2017-05-08
+ * @Date:   2019-04-05
+ * @Creater xiechuanming
  */
 
 layui.define(['jquery', 'element'], function(exports) {

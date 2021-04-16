@@ -54,7 +54,8 @@ namespace XQ.WebUI.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Incorrect Username or password");
-                    return View();
+                    return RedirectToAction("", "/404.html");
+                    //return View();
                 }
             }
             else
